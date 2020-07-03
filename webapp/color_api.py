@@ -129,7 +129,7 @@ def solid_color(r, g, b):
 
 def clear(ms_btwn_bulbs):
     logger.info("running the " + solid_color.__name__ + " function with ms_btwn_bulbs var = " 
-        + ms_btwn_bulbs + ".")
+        + str(ms_btwn_bulbs) + ".")
     colorWipe(strip, Color(0,0,0), ms_btwn_bulbs)
 
 
