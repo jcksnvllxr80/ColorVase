@@ -25,8 +25,9 @@ app.config["DEBUG"] = True
 
 @app.route('/', methods=['GET'])
 def home():
-    return '''<h1>Distant Reading Archive</h1>
-<p>A prototype API for distant reading of science fiction novels.</p>'''
+    logger.info("ColorApi: Change the color of a string of ws2811 LEDs on a raspi with google assistant.") 
+    return '''<h1>ColorApi</h1>
+<p>Change the color of a string of ws2811 LEDs on a raspi with google assistant.</p>'''
 
 
 @app.route('/pilight/<color>', methods=['GET'])
@@ -37,6 +38,7 @@ def api_all(color):
 
 @app.errorhandler(404)
 def page_not_found(e):
+    logger.error("404: The resource could not be found.") 
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
 
 
