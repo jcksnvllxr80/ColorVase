@@ -227,6 +227,10 @@ def decide_color_function(command):
 if __name__ == '__main__':
     # Process arguments
     logger.info("running the " + __name__ + " function.")
+    strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+    # Intialize the library (must be called once before other functions).
+    logger.info("Starting the ws2811 LEDs.")
+    strip.begin()
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port', dest='port', nargs='?', help='port to connect on')
     parser.add_argument('-b', '--brightness', dest='brightness', nargs='?', help='brightness of bulbs')
@@ -236,7 +240,3 @@ if __name__ == '__main__':
     else:
         port = 5000
     app.run(host='0.0.0.0', port=port)
-
-    strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
-    # Intialize the library (must be called once before other functions).
-    strip.begin()
