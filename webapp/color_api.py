@@ -32,8 +32,7 @@ def home():
 @app.route('/pilight/<color>', methods=['GET'])
 def api_all(color):
     logger.info("A request was made using the color API. The keyword used in the request was \"" + str(color) + "\"") 
-    return '''<h1>ColorApi</h1><p>A request was made using the color API. The keyword used in the request was \"''' +
-        color + '''\"</p>''' + "\n"
+    return '''<h1>ColorApi</h1><p>A request was made using the color API. The keyword used in the request was \"{color}.\"</p>''' + "\n"
 
 
 @app.errorhandler(404)
