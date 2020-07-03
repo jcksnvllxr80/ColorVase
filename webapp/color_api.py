@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import flask
+import flask, logging
 from flask import request, jsonify
 
 
@@ -31,7 +31,7 @@ def home():
 
 @app.route('/pilight/<color>', methods=['GET'])
 def api_all(color):
-    print(color) 
+    logger.info("The keyword used in the command was " + str(color)) 
     return color 
 
 
@@ -40,4 +40,4 @@ def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
 
 
-app.run(host='0.0.0.0', port=12345)
+app.run(host='localhost', port=12345)
