@@ -32,7 +32,7 @@ def home():
 
 @app.route('/pilight/<color>', methods=['GET'])
 def api_all(color):
-    logger.info("The keyword used in the command was " + str(color)) 
+    logger.info("The keyword used in the command was \"" + str(color) + "\"") 
     return color 
 
 
