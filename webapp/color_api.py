@@ -33,7 +33,7 @@ def home():
 def api_all(color):
     logger.info("A request was made using the color API. The keyword used in the request was \"" + str(color) + "\"") 
     return '''<h1>ColorApi</h1><p>A request was made using the color API. 
-    The keyword used in the request was \"{color}.\"</p>'''.format(color=color) + "\n"
+    The keyword used in the request was \"{color}\".</p>'''.format(color=color) + "\n"
 
 
 @app.errorhandler(404)
