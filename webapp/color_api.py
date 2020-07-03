@@ -55,6 +55,7 @@ def page_not_found(e):
 
 def colorWipe(strip, color, wait_ms=50):
     """Wipe color across display a pixel at a time."""
+    logger.info("running the " + colorWipe.__name__ + " function.")
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
         strip.show()
@@ -63,6 +64,7 @@ def colorWipe(strip, color, wait_ms=50):
 
 def theaterChase(strip, color, wait_ms=50, iterations=10):
     """Movie theater light style chaser animation."""
+    logger.info("running the " + theaterChase.__name__ + " function.")
     for j in range(iterations):
         for q in range(3):
             for i in range(0, strip.numPixels(), 3):
@@ -75,6 +77,7 @@ def theaterChase(strip, color, wait_ms=50, iterations=10):
 
 def wheel(pos):
     """Generate rainbow colors across 0-255 positions."""
+    logger.info("running the " + wheel.__name__ + " function.")
     if pos < 85:
         return Color(pos * 3, 255 - pos * 3, 0)
     elif pos < 170:
@@ -86,6 +89,7 @@ def wheel(pos):
 
 def rainbow(strip, wait_ms=20, iterations=1):
     """Draw rainbow that fades across all pixels at once."""
+    logger.info("running the " + rainbow.__name__ + " function.")
     for j in range(256*iterations):
         for i in range(strip.numPixels()):
             strip.setPixelColor(i, wheel((i+j) & 255))
@@ -94,6 +98,7 @@ def rainbow(strip, wait_ms=20, iterations=1):
 
 def rainbowCycle(strip, wait_ms=20, iterations=5):
     """Draw rainbow that uniformly distributes itself across all pixels."""
+    logger.info("running the " + rainbowCycle.__name__ + " function.")
     for j in range(256*iterations):
         for i in range(strip.numPixels()):
             strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels()) + j) & 255))
@@ -102,6 +107,7 @@ def rainbowCycle(strip, wait_ms=20, iterations=5):
 
 def theaterChaseRainbow(strip, wait_ms=50):
     """Rainbow movie theater light style chaser animation."""
+    logger.info("running the " + theaterChaseRainbow.__name__ + " function.")
     for j in range(256):
         for q in range(3):
             for i in range(0, strip.numPixels(), 3):
@@ -114,6 +120,7 @@ def theaterChaseRainbow(strip, wait_ms=50):
 
 def solid_color(r, g, b):
     """Solid color across display a pixel at a time."""
+    logger.info("running the " + solid_color.__name__ + " function.")
     r = r*LED_BRIGHTNESS
     g = g*LED_BRIGHTNESS
     b = b*LED_BRIGHTNESS
@@ -121,62 +128,78 @@ def solid_color(r, g, b):
 
 
 def clear(ms_btwn_bulbs):
+    logger.info("running the " + solid_color.__name__ + " function with ms_btwn_bulbs var = " 
+        + ms_btwn_bulbs + ".")
     colorWipe(strip, Color(0,0,0), ms_btwn_bulbs)
 
 
 def turn_off():
+    logger.info("running the " + turn_off.__name__ + " function.")
     solid_color(0, 0, 0)
 
 
 def turn_on():
+    logger.info("running the " + turn_on.__name__ + " function.")
     solid_color(1, 1, 1)
 
 
 def turn_red():
+    logger.info("running the " + turn_red.__name__ + " function.")
     solid_color(1, 0, 0)
 
 
 def turn_blue():
+    logger.info("running the " + turn_blue.__name__ + " function.")
     solid_color(0, 0, 1)
 
 
 def turn_green():
+    logger.info("running the " + turn_green.__name__ + " function.")
     solid_color(0, 1, 0)
 
 
 def turn_cyan():
+    logger.info("running the " + turn_cyan.__name__ + " function.")
     solid_color(0, 1, 1)
 
 
 def turn_magenta():
+    logger.info("running the " + turn_magenta.__name__ + " function.")
     solid_color(1, 0, 1)
 
 
 def turn_yellow():
+    logger.info("running the " + turn_yellow.__name__ + " function.")
     solid_color(1, 1, 0)
 
 
 def do_rainbow():
+    logger.info("running the " + do_rainbow.__name__ + " function.")
     pass
 
 
 def do_chase():
+    logger.info("running the " + do_chase.__name__ + " function.")
     pass
 
 
 def do_rainbow_chase():
+    logger.info("running the " + do_rainbow_chase.__name__ + " function.")
     pass
 
 
 def do_strobe():
+    logger.info("running the " + do_strobe.__name__ + " function.")
     pass
 
 
 def do_wheel():
+    logger.info("running the " + do_wheel.__name__ + " function.")
     pass
 
 
 def decide_color_function(command):
+    logger.info("running the " + decide_color_function.__name__ + " function.")
     command_dict = {
         "off"           : turn_off,
         "on"            : turn_on,
@@ -203,6 +226,7 @@ def decide_color_function(command):
 
 if __name__ == '__main__':
     # Process arguments
+    logger.info("running the " + __name__ + " function.")
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port', dest='port', nargs='?', help='port to connect on')
     parser.add_argument('-b', '--brightness', dest='brightness', nargs='?', help='brightness of bulbs')
