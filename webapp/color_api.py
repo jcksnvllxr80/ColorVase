@@ -26,7 +26,6 @@ app.config["DEBUG"] = True
 # LED strip configuration:
 LED_COUNT      = 25      # Number of LED pixels.
 LED_PIN        = 18      # GPIO pin connected to the pixels (18 uses PWM!).
-#LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA        = 10      # DMA channel to use for generating signal (try 10)
 LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
@@ -194,7 +193,6 @@ def decide_color_function(command):
         "wheel"         : do_wheel,
         "rainbow chase" : do_rainbow_chase
     }
-
     function = command_dict.get(command.lower(), None)
     if function:
         clear(20)
@@ -203,16 +201,18 @@ def decide_color_function(command):
         logger.error("The command\"" + command + "\" could not be found.") 
 
 
-# Process arguments
-parser = argparse.ArgumentParser()
-parser.add_argument('-p', '--port', dest='port', nargs='?', help='port to connect on')
-parser.add_argument('-b', '--brightness', dest='brightness', nargs='?', help='brightness of bulbs')
-args = parser.parse_args()
-if args.port:
-    port = args.port
-else:
-    port = 5000
-strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
-# Intialize the library (must be called once before other functions).
-strip.begin()
-app.run(host='0.0.0.0', port=port)
+if __name__ == '__main__':
+    # Process arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port', dest='port', nargs='?', help='port to connect on')
+    parser.add_argument('-b', '--brightness', dest='brightness', nargs='?', help='brightness of bulbs')
+    args = parser.parse_args()
+    if args.port:
+        port = args.port
+    else:
+        port = 5000
+    app.run(host='0.0.0.0', port=port)
+
+    strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+    # Intialize the library (must be called once before other functions).
+    strip.begin()
