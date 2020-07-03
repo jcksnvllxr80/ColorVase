@@ -31,7 +31,6 @@ LED_DMA        = 10      # DMA channel to use for generating signal (try 10)
 LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
-new_command = False
 
 
 @app.route('/', methods=['GET'])
@@ -42,7 +41,6 @@ def home():
 
 @app.route('/pilight/color/<command>', methods=['GET'])
 def api_all(command):
-    new_command = True
     logger.info("A request was made using the color API. The keyword used in the request was \"" + str(command) + "\"") 
     decide_color_function(command)
     return '''<h1>ColorApi</h1><p>A request was made using the color API. 
@@ -177,7 +175,8 @@ def turn_yellow():
 
 def do_rainbow():
     logger.info("running the " + do_rainbow.__name__ + " function.")
-    pass
+    while True:
+        rainbow(strip)
 
 
 def do_chase():
@@ -187,7 +186,8 @@ def do_chase():
 
 def do_rainbow_chase():
     logger.info("running the " + do_rainbow_chase.__name__ + " function.")
-    pass
+    while True:
+        theaterChaseRainbow(strip)
 
 
 def do_strobe():
@@ -202,12 +202,12 @@ def do_wheel():
 
 def do_colorwipe_cycle():
     logger.info("running the " + do_colorwipe_cycle.__name__ + " function.")
-    while not new_command:
-        turn_red()
+    while True:
         turn_blue()
+        turn_red()
+        turn_magenta()
         turn_green()
         turn_cyan()
-        turn_magenta()
         turn_yellow()
         turn_on()
         turn_off()
@@ -235,7 +235,6 @@ def decide_color_function(command):
     function = command_dict.get(command.lower(), None)
     if function:
         clear(20)
-        new_command = False
         function()
     else:
         logger.error("The command\"" + command + "\" could not be found.") 
