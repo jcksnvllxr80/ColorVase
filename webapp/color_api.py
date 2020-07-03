@@ -31,6 +31,7 @@ LED_DMA        = 10      # DMA channel to use for generating signal (try 10)
 LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
+new_command = False
 
 
 @app.route('/', methods=['GET'])
@@ -41,6 +42,7 @@ def home():
 
 @app.route('/pilight/color/<command>', methods=['GET'])
 def api_all(command):
+    new_command = True
     logger.info("A request was made using the color API. The keyword used in the request was \"" + str(command) + "\"") 
     decide_color_function(command)
     return '''<h1>ColorApi</h1><p>A request was made using the color API. 
@@ -124,7 +126,7 @@ def solid_color(r, g, b):
     r = r*LED_BRIGHTNESS
     g = g*LED_BRIGHTNESS
     b = b*LED_BRIGHTNESS
-    colorWipe(strip, Color(r, g, b))
+    colorWipe(strip, Color(g, r, b))
 
 
 def clear(ms_btwn_bulbs):
@@ -198,6 +200,19 @@ def do_wheel():
     pass
 
 
+def do_colorwipe_cycle():
+    logger.info("running the " + do_colorwipe_cycle.__name__ + " function.")
+    while not new_command:
+        turn_red()
+        turn_blue()
+        turn_green()
+        turn_cyan()
+        turn_magenta()
+        turn_yellow()
+        turn_on()
+        turn_off()
+
+
 def decide_color_function(command):
     logger.info("running the " + decide_color_function.__name__ + " function.")
     command_dict = {
@@ -214,11 +229,13 @@ def decide_color_function(command):
         "chase"         : do_chase,
         "strobe"        : do_strobe,
         "wheel"         : do_wheel,
-        "rainbow chase" : do_rainbow_chase
+        "rainbow chase" : do_rainbow_chase,
+        "color wipe"    : do_colorwipe_cycle
     }
     function = command_dict.get(command.lower(), None)
     if function:
         clear(20)
+        new_command = False
         function()
     else:
         logger.error("The command\"" + command + "\" could not be found.") 
