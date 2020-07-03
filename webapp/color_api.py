@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import flask, loggingn, time, argparse
+import flask, logging, time, argparse
 from flask import request, jsonify
 from rpi_ws281x import *
 
