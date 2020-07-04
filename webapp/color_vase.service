@@ -1,0 +1,23 @@
+# this file runs ~/ColorVase/webapp/color_api.py as a service at boot time
+#
+# automate later:
+# sudo update-rc.d color_vase defaults
+# sudo systemctl daemon-reload
+# sudo systemctl enable ~/MidiController/Main/color_vase.service
+#
+# Usage:
+# sudo systemctl start | status | stop | restart color_vase
+# OR
+# sudo service color_vase start | status | stop | restart
+
+[Unit]
+Description=ColorVase Api Service
+After=local-fs.target basic.target
+
+[Service]
+Type=idle
+User=root
+ExecStart=/usr/bin/nohup /usr/bin/python3 /home/pi/ColorVase/webapp/color_api.py 2>&1 &
+
+[Install]
+WantedBy=basic.target
