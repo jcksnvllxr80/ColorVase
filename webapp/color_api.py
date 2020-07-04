@@ -341,7 +341,7 @@ def decide_function(command):
         clear(20)
         break_out_of_current_thread = False
         start_new_thread(function, function.__name__)
-        save_to_config("func", command)
+        # save_to_config("func", command)
     else:
         logger.error("The command\"" + command + "\" could not be found.") 
 
@@ -351,11 +351,11 @@ if __name__ == '__main__':
     logger.debug("running the " + __name__ + " function.")
     configuration = {k: v for k, v in config_file['color_api'].items()}
     config_port = configuration['port']
-    config_func = configuration['func']
+    # config_func = configuration['func']
     config_brightness = configuration['brightness']
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port', dest='port', nargs='?', help='port to connect on')
-    parser.add_argument('-f', '--function', dest='func', nargs='?', help='initial lighting function')
+    # parser.add_argument('-f', '--function', dest='func', nargs='?', help='initial lighting function')
     parser.add_argument('-b', '--brightness', dest='brightness', nargs='?', help='brightness of bulbs')
     args = parser.parse_args()
 
@@ -370,17 +370,18 @@ if __name__ == '__main__':
         LED_INVERT, init_brightness, LED_CHANNEL)
     # Intialize the library (must be called once before other functions).
     strip.begin()
-    if args.func:
-        init_func = args.func
-        save_to_config("func", init_func)
-    elif config_func:
-        init_func = config_func
+    clear(20)
+    # if args.func:
+    #     init_func = args.func
+    #     save_to_config("func", init_func)
+    # elif config_func:
+    #     init_func = config_func
 
-    if init_func:
-        break_out_of_current_thread = True
-        decide_function(init_func)
-    else:
-        clear(20)
+    # if init_func:
+    #     break_out_of_current_thread = True
+    #     decide_function(init_func)
+    # else:
+    #     clear(20)
 
     if args.port:
         port = args.port
