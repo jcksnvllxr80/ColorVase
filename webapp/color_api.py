@@ -32,7 +32,23 @@ LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
-break_out_of_current_function = False
+
+LED_threads = []
+break_out_of_current_thread = False
+
+
+class ThreadRunner(threading.Thread):
+    def __init__(self, threadID, name, func):
+        logger.info("Creating thread with ThreadID=" + threadID + " and name=" + self.name + ".")
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.func = func
+
+    def run(self):
+        logger.info("Starting " + self.name)
+        self.func()
+        logger.info("Exiting " + self.name)
 
 
 @app.route('/', methods=['GET'])
@@ -43,7 +59,8 @@ def home():
 
 @app.route('/pilight/color/<command>', methods=['GET'])
 def color_api(command):
-    break_out_of_current_function = True
+    global break_out_of_current_thread
+    break_out_of_current_thread = True
     logger.info("A function request was made using the Color API. The keyword used in the request was \"" + str(command) + "\"") 
     decide_function(command)
     return '''<h1>ColorApi</h1><p>A function request was made using the Color API. 
@@ -64,6 +81,26 @@ def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>\n", 404
 
 
+def start_new_thread(func, name):
+    while check_for_running_threads():
+        time.sleep(0.005)
+    new_thread = ThreadRunner(1, name, func)
+    start_thread(new_thread)
+    LED_threads.append(new_thread)
+
+
+def start_thread(func_thread):
+    thread = func_thread
+    thread.start()
+
+
+def check_for_running_threads():
+    global LED_threads
+    running_threads = [thread for thread in LED_threads if thread.isAlive()]
+    LED_threads = running_threads
+    return True if len(LED_threads) > 0 else False
+
+
 def colorWipe(strip, color, wait_ms=50):
     """Wipe color across display a pixel at a time."""
     logger.debug("running the " + colorWipe.__name__ + " function.")
@@ -77,9 +114,9 @@ def theaterChase(strip, color, wait_ms=50, iterations=10):
     """Movie theater light style chaser animation."""
     logger.debug("running the " + theaterChase.__name__ + " function.")
     for j in range(iterations):
-        if not break_out_of_current_function:
+        if not break_out_of_current_thread:
             for q in range(3):
-                if not break_out_of_current_function:
+                if not break_out_of_current_thread:
                     for i in range(0, strip.numPixels(), 3):
                         strip.setPixelColor(i+q, color)
                     strip.show()
@@ -109,7 +146,7 @@ def rainbow(strip, wait_ms=20, iterations=1):
     """Draw rainbow that fades across all pixels at once."""
     logger.debug("running the " + rainbow.__name__ + " function.")
     for j in range(256*iterations):
-        if not break_out_of_current_function:
+        if not break_out_of_current_thread:
             for i in range(strip.numPixels()):
                 strip.setPixelColor(i, wheel((i+j) & 255))
             strip.show()
@@ -122,7 +159,7 @@ def rainbowCycle(strip, wait_ms=20, iterations=5):
     """Draw rainbow that uniformly distributes itself across all pixels."""
     logger.debug("running the " + rainbowCycle.__name__ + " function.")
     for j in range(256*iterations):
-        if not break_out_of_current_function:
+        if not break_out_of_current_thread:
             for i in range(strip.numPixels()):
                 strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels()) + j) & 255))
             strip.show()
@@ -135,7 +172,7 @@ def theaterChaseRainbow(strip, wait_ms=50):
     """Rainbow movie theater light style chaser animation."""
     logger.debug("running the " + theaterChaseRainbow.__name__ + " function.")
     for j in range(256):
-        if not break_out_of_current_function:
+        if not break_out_of_current_thread:
             for q in range(3):
                 for i in range(0, strip.numPixels(), 3):
                     strip.setPixelColor(i+q, wheel((i+j) % 255))
@@ -204,25 +241,25 @@ def turn_yellow():
 
 def do_rainbow():
     logger.debug("running the " + do_rainbow.__name__ + " function.")
-    while not break_out_of_current_function:
+    while not break_out_of_current_thread:
         rainbow(strip)
 
 
 def do_rainbow_chase():
     logger.debug("running the " + do_rainbow_chase.__name__ + " function.")
-    while not break_out_of_current_function:
+    while not break_out_of_current_thread:
         theaterChaseRainbow(strip)
 
 
 def do_strobe():
     logger.debug("running the " + do_strobe.__name__ + " function.")
-    while not break_out_of_current_function:
+    while not break_out_of_current_thread:
         theaterChase(strip, Color(255, 255, 255))
 
 
 def do_combo():
     logger.debug("running the " + do_combo.__name__ + " function.")
-    while not break_out_of_current_function:
+    while not break_out_of_current_thread:
         colorwipe_cycle()
         rainbow(strip, 20, 2)
         rainbow_cycle()
@@ -230,14 +267,14 @@ def do_combo():
 
 def do_colorwipe_cycle():
     logger.debug("running the " + do_colorwipe_cycle.__name__ + " function.")
-    while not break_out_of_current_function:
+    while not break_out_of_current_thread:
         colorwipe_cycle()
 
 
 def colorwipe_cycle():
     func_list = [turn_blue, turn_red, turn_magenta, turn_green, turn_cyan, turn_yellow, turn_on, turn_off]
     for func in func_list:
-        if not break_out_of_current_function:
+        if not break_out_of_current_thread:
             func()
         else:
             break
@@ -245,7 +282,7 @@ def colorwipe_cycle():
 
 def do_rainbow_cycle():
     logger.debug("running the " + do_rainbow_cycle.__name__ + " function.")
-    while not break_out_of_current_function:
+    while not break_out_of_current_thread:
         rainbow_cycle()
 
 
@@ -259,7 +296,7 @@ def change_brightness(brightness):
 
 
 def decide_function(command):
-    global break_out_of_current_function
+    global break_out_of_current_thread
     logger.debug("running the " + decide_function.__name__ + " function.")
     command_dict = {
         "off"           : turn_off,
@@ -281,8 +318,8 @@ def decide_function(command):
     function = command_dict.get(command.lower(), None)
     if function:
         clear(20)
-        break_out_of_current_function = False
-        function()
+        break_out_of_current_thread = False
+        start_new_thread(function(), function.__name__)
     else:
         logger.error("The command\"" + command + "\" could not be found.") 
 
