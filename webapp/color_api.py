@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import flask, logging, time, argparse, threading
+import flask, logging, time, argparse, threading, yaml
 from flask import request, jsonify
 from rpi_ws281x import *
 
@@ -31,7 +31,11 @@ LED_DMA        = 10      # DMA channel to use for generating signal (try 10)
 LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
-
+# config file 
+CONFIG_FOLDER = "/pi/home/ColorVase/webapp/conf/"
+CONFIG_FILE = CONFIG_FOLDER + "color_api.yaml"
+with open(CONFIG_FILE, 'r') as ymlfile:
+    config_file = yaml.load(ymlfile)
 
 LED_threads = []
 break_out_of_current_thread = False
@@ -80,6 +84,13 @@ def color_api_brightness(prcnt_brightness):
 def page_not_found(e):
     logger.error("404: The resource could not be found.") 
     return "<h1>404</h1><p>The resource could not be found.</p>\n", 404
+
+
+def save_to_config(opt, val):
+    global config_file
+    config_file.update({opt: val})
+    with open(CONFIG_FILE, 'w') as ymlfile:
+        yaml.dump(config_file, ymlfile)
 
 
 def start_new_thread(func, name):
@@ -296,7 +307,9 @@ def rainbow_cycle():
 def change_brightness(prcnt_brightness):
     global bright_prcnt
     logger.debug("running the " + change_brightness.__name__ + " function.")
-    strip.setBrightness(convert_percent_to_byte_range(prcnt_brightness))
+    new_brightness = convert_percent_to_byte_range(prcnt_brightness)
+    save_to_config("brightness", new_brightness)
+    strip.setBrightness(new_brightness)
 
 
 def convert_percent_to_byte_range(prcnt_brightness):
@@ -328,6 +341,7 @@ def decide_function(command):
         clear(20)
         break_out_of_current_thread = False
         start_new_thread(function, function.__name__)
+        save_to_config("func", command)
     else:
         logger.error("The command\"" + command + "\" could not be found.") 
 
@@ -335,16 +349,42 @@ def decide_function(command):
 if __name__ == '__main__':
     # Process arguments
     logger.debug("running the " + __name__ + " function.")
-    strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
-    # Intialize the library (must be called once before other functions).
-    logger.info("Starting the ws2811 LEDs.")
-    strip.begin()
+    configuration = {k: v for k, v in config_file['color_api'].iteritems()}
+    config_port = configuration['port']
+    config_func = configuration['func']
+    config_brightness = configuration['brightness']
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port', dest='port', nargs='?', help='port to connect on')
+    parser.add_argument('-f', '--function', dest='func', nargs='?', help='initial lighting function')
     parser.add_argument('-b', '--brightness', dest='brightness', nargs='?', help='brightness of bulbs')
     args = parser.parse_args()
+
+    if args.brightness:
+        init_brightness = args.brightness
+    elif config_brightness:
+        init_brightness = config_brightness
+    else:
+        init_brightness = 5000
+    logger.info("Starting the ws2811 LEDs.")
+    strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, 
+        LED_INVERT, init_brightness, LED_CHANNEL)
+    # Intialize the library (must be called once before other functions).
+    strip.begin()
+    if args.func:
+        init_func = args.func
+        save_to_config("func", init_func)
+    elif config_func:
+        init_func = config_func
+    if init_func:
+        decide_function(init_func)
+    else:
+        clear(20)
+
     if args.port:
         port = args.port
+        save_to_config("port", port)
+    elif config_port:
+        port = config_port
     else:
         port = 5000
     app.run(host='0.0.0.0', port=port)
