@@ -188,10 +188,12 @@ def theaterChaseRainbow(strip, wait_ms=50):
 def solid_color(r, g, b):
     """Solid color across display a pixel at a time."""
     logger.debug("running the " + solid_color.__name__ + " function.")
-    r = r*LED_BRIGHTNESS
-    g = g*LED_BRIGHTNESS
-    b = b*LED_BRIGHTNESS
-    colorWipe(strip, Color(g, r, b))
+    while not break_out_of_current_thread:
+        r = r*LED_BRIGHTNESS
+        g = g*LED_BRIGHTNESS
+        b = b*LED_BRIGHTNESS
+        colorWipe(strip, Color(g, r, b))
+        time.sleep(0.1)
 
 
 def clear(ms_btwn_bulbs):
