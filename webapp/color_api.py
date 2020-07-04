@@ -298,7 +298,7 @@ def change_brightness(prcnt_brightness):
 
 
 def convert_percent_to_byte_range(prcnt_brightness):
-    return int(prcnt_brightness * 2.55)
+    return int(float(prcnt_brightness) * 2.55)
 
 
 def decide_function(command):
