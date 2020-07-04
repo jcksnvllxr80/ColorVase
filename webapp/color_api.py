@@ -203,18 +203,18 @@ def solid_color(r, g, b):
     b = b*LED_BRIGHTNESS
     while not break_out_of_current_thread:
         colorWipe(strip, Color(g, r, b))
-        time.sleep(0.1)
+        # time.sleep(0.1)
 
 
 def clear(ms_btwn_bulbs):
-    logger.debug("running the " + solid_color.__name__ + " function with ms_btwn_bulbs var = " 
+    logger.debug("running the " + clear.__name__ + " function with ms_btwn_bulbs var = " 
         + str(ms_btwn_bulbs) + ".")
     colorWipe(strip, Color(0,0,0), ms_btwn_bulbs)
 
 
 def turn_off():
     logger.debug("running the " + turn_off.__name__ + " function.")
-    solid_color(0, 0, 0)
+    clear(50)
 
 
 def turn_on():
