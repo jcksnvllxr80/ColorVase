@@ -375,6 +375,7 @@ if __name__ == '__main__':
         save_to_config("func", init_func)
     elif config_func:
         init_func = config_func
+
     if init_func:
         break_out_of_current_thread = True
         decide_function(init_func)
@@ -388,4 +389,4 @@ if __name__ == '__main__':
         port = config_port
     else:
         port = 5000
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, use_reloader=False)
