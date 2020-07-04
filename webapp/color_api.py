@@ -32,7 +32,7 @@ LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 # config file 
-CONFIG_FOLDER = "/pi/home/ColorVase/webapp/conf/"
+CONFIG_FOLDER = "/home/pi/ColorVase/webapp/conf/"
 CONFIG_FILE = CONFIG_FOLDER + "color_api.yaml"
 with open(CONFIG_FILE, 'r') as ymlfile:
     config_file = yaml.load(ymlfile)
