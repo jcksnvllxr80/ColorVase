@@ -40,11 +40,19 @@ def home():
 
 
 @app.route('/pilight/color/<command>', methods=['GET'])
-def api_all(command):
-    logger.info("A request was made using the color API. The keyword used in the request was \"" + str(command) + "\"") 
-    decide_color_function(command)
-    return '''<h1>ColorApi</h1><p>A request was made using the color API. 
+def color_api(command):
+    logger.info("A function request was made using the Color API. The keyword used in the request was \"" + str(command) + "\"") 
+    decide_function(command)
+    return '''<h1>ColorApi</h1><p>A function request was made using the Color API. 
     The keyword used in the request was \"{command}\".</p>'''.format(command=command) + "\n"
+
+
+@app.route('/pilight/brightness/<brightness>', methods=['GET'])
+def color_api_brightness(brightness):
+    logger.info("A brightness request was made using the Color API. The keyword used in the request was \"" + str(brightness) + "\"") 
+    change_brightness(brightness)
+    return '''<h1>ColorApi</h1><p>A brightness request was made using the Color API. 
+    The value in the request was \"{brightness}\".</p>'''.format(brightness=brightness) + "\n"
 
 
 @app.errorhandler(404)
@@ -55,7 +63,7 @@ def page_not_found(e):
 
 def colorWipe(strip, color, wait_ms=50):
     """Wipe color across display a pixel at a time."""
-    logger.info("running the " + colorWipe.__name__ + " function.")
+    logger.debug("running the " + colorWipe.__name__ + " function.")
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
         strip.show()
@@ -64,7 +72,7 @@ def colorWipe(strip, color, wait_ms=50):
 
 def theaterChase(strip, color, wait_ms=50, iterations=10):
     """Movie theater light style chaser animation."""
-    logger.info("running the " + theaterChase.__name__ + " function.")
+    logger.debug("running the " + theaterChase.__name__ + " function.")
     for j in range(iterations):
         for q in range(3):
             for i in range(0, strip.numPixels(), 3):
@@ -77,7 +85,7 @@ def theaterChase(strip, color, wait_ms=50, iterations=10):
 
 def wheel(pos):
     """Generate rainbow colors across 0-255 positions."""
-    logger.info("running the " + wheel.__name__ + " function.")
+    logger.debug("running the " + wheel.__name__ + " function.")
     if pos < 85:
         return Color(pos * 3, 255 - pos * 3, 0)
     elif pos < 170:
@@ -87,27 +95,30 @@ def wheel(pos):
         pos -= 170
         return Color(0, pos * 3, 255 - pos * 3)
 
+
 def rainbow(strip, wait_ms=20, iterations=1):
     """Draw rainbow that fades across all pixels at once."""
-    logger.info("running the " + rainbow.__name__ + " function.")
+    logger.debug("running the " + rainbow.__name__ + " function.")
     for j in range(256*iterations):
         for i in range(strip.numPixels()):
             strip.setPixelColor(i, wheel((i+j) & 255))
         strip.show()
         time.sleep(wait_ms/1000.0)
 
+
 def rainbowCycle(strip, wait_ms=20, iterations=5):
     """Draw rainbow that uniformly distributes itself across all pixels."""
-    logger.info("running the " + rainbowCycle.__name__ + " function.")
+    logger.debug("running the " + rainbowCycle.__name__ + " function.")
     for j in range(256*iterations):
         for i in range(strip.numPixels()):
             strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels()) + j) & 255))
         strip.show()
         time.sleep(wait_ms/1000.0)
 
+
 def theaterChaseRainbow(strip, wait_ms=50):
     """Rainbow movie theater light style chaser animation."""
-    logger.info("running the " + theaterChaseRainbow.__name__ + " function.")
+    logger.debug("running the " + theaterChaseRainbow.__name__ + " function.")
     for j in range(256):
         for q in range(3):
             for i in range(0, strip.numPixels(), 3):
@@ -120,7 +131,7 @@ def theaterChaseRainbow(strip, wait_ms=50):
 
 def solid_color(r, g, b):
     """Solid color across display a pixel at a time."""
-    logger.info("running the " + solid_color.__name__ + " function.")
+    logger.debug("running the " + solid_color.__name__ + " function.")
     r = r*LED_BRIGHTNESS
     g = g*LED_BRIGHTNESS
     b = b*LED_BRIGHTNESS
@@ -128,93 +139,111 @@ def solid_color(r, g, b):
 
 
 def clear(ms_btwn_bulbs):
-    logger.info("running the " + solid_color.__name__ + " function with ms_btwn_bulbs var = " 
+    logger.debug("running the " + solid_color.__name__ + " function with ms_btwn_bulbs var = " 
         + str(ms_btwn_bulbs) + ".")
     colorWipe(strip, Color(0,0,0), ms_btwn_bulbs)
 
 
 def turn_off():
-    logger.info("running the " + turn_off.__name__ + " function.")
+    logger.debug("running the " + turn_off.__name__ + " function.")
     solid_color(0, 0, 0)
 
 
 def turn_on():
-    logger.info("running the " + turn_on.__name__ + " function.")
+    logger.debug("running the " + turn_on.__name__ + " function.")
     solid_color(1, 1, 1)
 
 
 def turn_red():
-    logger.info("running the " + turn_red.__name__ + " function.")
+    logger.debug("running the " + turn_red.__name__ + " function.")
     solid_color(1, 0, 0)
 
 
 def turn_blue():
-    logger.info("running the " + turn_blue.__name__ + " function.")
+    logger.debug("running the " + turn_blue.__name__ + " function.")
     solid_color(0, 0, 1)
 
 
 def turn_green():
-    logger.info("running the " + turn_green.__name__ + " function.")
+    logger.debug("running the " + turn_green.__name__ + " function.")
     solid_color(0, 1, 0)
 
 
 def turn_cyan():
-    logger.info("running the " + turn_cyan.__name__ + " function.")
+    logger.debug("running the " + turn_cyan.__name__ + " function.")
     solid_color(0, 1, 1)
 
 
 def turn_magenta():
-    logger.info("running the " + turn_magenta.__name__ + " function.")
+    logger.debug("running the " + turn_magenta.__name__ + " function.")
     solid_color(1, 0, 1)
 
 
 def turn_yellow():
-    logger.info("running the " + turn_yellow.__name__ + " function.")
+    logger.debug("running the " + turn_yellow.__name__ + " function.")
     solid_color(1, 1, 0)
 
 
 def do_rainbow():
-    logger.info("running the " + do_rainbow.__name__ + " function.")
+    logger.debug("running the " + do_rainbow.__name__ + " function.")
     while True:
         rainbow(strip)
 
 
-def do_chase():
-    logger.info("running the " + do_chase.__name__ + " function.")
-    pass
-
-
 def do_rainbow_chase():
-    logger.info("running the " + do_rainbow_chase.__name__ + " function.")
+    logger.debug("running the " + do_rainbow_chase.__name__ + " function.")
     while True:
         theaterChaseRainbow(strip)
 
 
 def do_strobe():
-    logger.info("running the " + do_strobe.__name__ + " function.")
-    pass
+    logger.debug("running the " + do_strobe.__name__ + " function.")
+    while True:
+        theaterChase(strip, Color(255, 255, 255))
 
 
-def do_wheel():
-    logger.info("running the " + do_wheel.__name__ + " function.")
-    pass
+def do_combo():
+    logger.debug("running the " + do_combo.__name__ + " function.")
+    while True:
+        colorwipe_cycle()
+        rainbow(strip, 20, 2)
+        rainbow_cycle()
 
 
 def do_colorwipe_cycle():
-    logger.info("running the " + do_colorwipe_cycle.__name__ + " function.")
+    logger.debug("running the " + do_colorwipe_cycle.__name__ + " function.")
     while True:
-        turn_blue()
-        turn_red()
-        turn_magenta()
-        turn_green()
-        turn_cyan()
-        turn_yellow()
-        turn_on()
-        turn_off()
+        colorwipe_cycle()
 
 
-def decide_color_function(command):
-    logger.info("running the " + decide_color_function.__name__ + " function.")
+def colorwipe_cycle():
+    turn_blue()
+    turn_red()
+    turn_magenta()
+    turn_green()
+    turn_cyan()
+    turn_yellow()
+    turn_on()
+    turn_off()
+
+
+def do_rainbow_cycle():
+    logger.debug("running the " + do_rainbow_cycle.__name__ + " function.")
+    while True:
+        rainbow_cycle()
+
+
+def rainbow_cycle():
+    rainbowCycle(strip, 20)
+
+
+def change_brightness(brightness):
+    logger.debug("running the " + change_brightness.__name__ + " function.")
+    pass
+
+
+def decide_function(command):
+    logger.debug("running the " + decide_function.__name__ + " function.")
     command_dict = {
         "off"           : turn_off,
         "on"            : turn_on,
@@ -225,12 +254,12 @@ def decide_color_function(command):
         "magenta"       : turn_magenta,
         "yellow"        : turn_yellow,
         "white"         : turn_on,
-        "rainbow"       : do_rainbow,
-        "chase"         : do_chase,
         "strobe"        : do_strobe,
-        "wheel"         : do_wheel,
+        "combo"         : do_combo,
+        "rainbow"       : do_rainbow,
+        "rainbow cycle" : do_rainbow_cycle,
         "rainbow chase" : do_rainbow_chase,
-        "color wipe"    : do_colorwipe_cycle
+        "color flip"    : do_colorwipe_cycle
     }
     function = command_dict.get(command.lower(), None)
     if function:
@@ -242,7 +271,7 @@ def decide_color_function(command):
 
 if __name__ == '__main__':
     # Process arguments
-    logger.info("running the " + __name__ + " function.")
+    logger.debug("running the " + __name__ + " function.")
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
     # Intialize the library (must be called once before other functions).
     logger.info("Starting the ws2811 LEDs.")
