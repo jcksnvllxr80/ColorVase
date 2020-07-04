@@ -64,9 +64,13 @@ def home():
 @app.route('/pilight/color/<command>', methods=['GET'])
 def color_api(command):
     global break_out_of_current_thread
-    break_out_of_current_thread = True
     logger.info("A function request was made using the Color API. The keyword used in the request was \"" + str(command) + "\"") 
-    decide_function(command)
+    function = command_dict.get(command.lower(), None)
+    if function:
+        break_out_of_current_thread = True
+    else:
+        logger.error("The function \"" + command + "\" could not be found.") 
+    run_function(function)
     return '''<h1>ColorApi</h1><p>A function request was made using the Color API. 
     The keyword used in the request was \"{command}\".</p>'''.format(command=command) + "\n"
 
@@ -318,9 +322,18 @@ def convert_percent_to_byte_range(prcnt_brightness):
     return int(float(prcnt_brightness) * 2.55)
 
 
-def decide_function(command):
+def run_function(function):
     global break_out_of_current_thread
-    logger.debug("running the " + decide_function.__name__ + " function.")
+    logger.debug("running the " + run_function.__name__ + " function.")
+    clear(20)
+    start_new_thread(function, function.__name__)
+    break_out_of_current_thread = False
+    # save_to_config("func", function)
+
+
+if __name__ == '__main__':
+    # Process arguments
+    logger.debug("running the " + __name__ + " function.")
     command_dict = {
         "off"           : turn_off,
         "on"            : turn_on,
@@ -338,19 +351,6 @@ def decide_function(command):
         "rainbow chase" : do_rainbow_chase,
         "color flip"    : do_colorwipe_cycle
     }
-    function = command_dict.get(command.lower(), None)
-    if function:
-        clear(20)
-        start_new_thread(function, function.__name__)
-        break_out_of_current_thread = False
-        # save_to_config("func", command)
-    else:
-        logger.error("The command\"" + command + "\" could not be found.") 
-
-
-if __name__ == '__main__':
-    # Process arguments
-    logger.debug("running the " + __name__ + " function.")
     configuration = {k: v for k, v in config_file['color_api'].items()}
     config_port = configuration['port']
     # config_func = configuration['func']
@@ -381,7 +381,7 @@ if __name__ == '__main__':
 
     # if init_func:
     #     break_out_of_current_thread = True
-    #     decide_function(init_func)
+    #     run_function(init_func)
     # else:
     #     clear(20)
 
