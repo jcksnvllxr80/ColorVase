@@ -134,13 +134,13 @@ def wheel(pos):
     """Generate rainbow colors across 0-255 positions."""
     logger.debug("running the " + wheel.__name__ + " function.")
     if pos < 85:
-        return Color(int(bright_prcnt * pos * 3), int(bright_prcnt * (255 - pos * 3)), 0)
+        return Color(pos * 3, 255 - pos * 3, 0)
     elif pos < 170:
         pos -= 85
-        return Color(int(bright_prcnt * (255 - pos * 3)), 0, int(bright_prcnt * pos * 3))
+        return Color(255 - pos * 3, 0, pos * 3)
     else:
         pos -= 170
-        return Color(0, int(bright_prcnt * pos * 3), int(bright_prcnt * (255 - pos * 3)))
+        return Color(0, pos * 3, 255 - pos * 3)
 
 
 def rainbow(strip, wait_ms=20, iterations=1):
@@ -188,9 +188,9 @@ def theaterChaseRainbow(strip, wait_ms=50):
 def solid_color(r, g, b):
     """Solid color across display a pixel at a time."""
     logger.debug("running the " + solid_color.__name__ + " function.")
-    r = r * LED_BRIGHTNESS * bright_prcnt
-    g = g * LED_BRIGHTNESS * bright_prcnt
-    b = b * LED_BRIGHTNESS * bright_prcnt
+    r = r*LED_BRIGHTNESS
+    g = g*LED_BRIGHTNESS
+    b = b*LED_BRIGHTNESS
     colorWipe(strip, Color(g, r, b))
 
 
@@ -294,7 +294,11 @@ def rainbow_cycle():
 def change_brightness(prcnt_brightness):
     global bright_prcnt
     logger.debug("running the " + change_brightness.__name__ + " function.")
-    bright_prcnt = int(prcnt_brightness/100)
+    strip.setBrightness(convert_percent_to_byte_range(prcnt_brightness))
+
+
+def convert_percent_to_byte_range(prcnt_brightness):
+    return int(prcnt_brightness * 2.55)
 
 
 def decide_function(command):
