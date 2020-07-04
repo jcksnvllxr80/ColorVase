@@ -209,9 +209,8 @@ def solid_color(r, g, b):
     r = r*LED_BRIGHTNESS
     g = g*LED_BRIGHTNESS
     b = b*LED_BRIGHTNESS
-    while not break_out_of_current_thread:
-        colorWipe(strip, Color(g, r, b))
-        time.sleep(0.01)
+    colorWipe(strip, Color(g, r, b))
+    time.sleep(0.01)
 
 
 def clear(ms_btwn_bulbs):
@@ -222,41 +221,81 @@ def clear(ms_btwn_bulbs):
 
 def turn_off():
     logger.debug("running the " + turn_off.__name__ + " function.")
+    while not break_out_of_current_thread:
+        dark()
+
+def dark():
+    logger.debug("running the " + dark.__name__ + " function.")
     clear(50)
 
 
 def turn_on():
     logger.debug("running the " + turn_on.__name__ + " function.")
+    while not break_out_of_current_thread:
+        white()
+
+def white():
+    logger.debug("running the " + white.__name__ + " function.")
     solid_color(1, 1, 1)
 
 
 def turn_red():
     logger.debug("running the " + turn_red.__name__ + " function.")
+    while not break_out_of_current_thread:
+        red()
+
+def red():
+    logger.debug("running the " + red.__name__ + " function.")
     solid_color(1, 0, 0)
 
 
 def turn_blue():
     logger.debug("running the " + turn_blue.__name__ + " function.")
+    while not break_out_of_current_thread:
+        blue()
+
+def blue():
+    logger.debug("running the " + blue.__name__ + " function.")
     solid_color(0, 0, 1)
 
 
 def turn_green():
     logger.debug("running the " + turn_green.__name__ + " function.")
+    while not break_out_of_current_thread:
+        green()
+
+def green():
+    logger.debug("running the " + green.__name__ + " function.")
     solid_color(0, 1, 0)
 
 
 def turn_cyan():
     logger.debug("running the " + turn_cyan.__name__ + " function.")
+    while not break_out_of_current_thread:
+        cyan()
+
+def cyan():
+    logger.debug("running the " + cyan.__name__ + " function.")
     solid_color(0, 1, 1)
 
 
 def turn_magenta():
     logger.debug("running the " + turn_magenta.__name__ + " function.")
+    while not break_out_of_current_thread:
+        magenta()
+
+def magenta():
+    logger.debug("running the " + magenta.__name__ + " function.")
     solid_color(1, 0, 1)
 
 
 def turn_yellow():
     logger.debug("running the " + turn_yellow.__name__ + " function.")
+    while not break_out_of_current_thread:
+        yellow()
+
+def yellow():
+    logger.debug("running the " + yellow.__name__ + " function.")
     solid_color(1, 1, 0)
 
 
@@ -293,7 +332,7 @@ def do_colorwipe_cycle():
 
 
 def colorwipe_cycle():
-    func_list = [turn_blue, turn_red, turn_magenta, turn_green, turn_cyan, turn_yellow, turn_on, turn_off]
+    func_list = [blue, red, magenta, green, cyan, yellow, white, dark]
     for func in func_list:
         if not break_out_of_current_thread:
             func()
