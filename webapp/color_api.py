@@ -349,7 +349,7 @@ def decide_function(command):
 if __name__ == '__main__':
     # Process arguments
     logger.debug("running the " + __name__ + " function.")
-    configuration = {k: v for k, v in config_file['color_api'].iteritems()}
+    configuration = {k: v for k, v in config_file['color_api'].items()}
     config_port = configuration['port']
     config_func = configuration['func']
     config_brightness = configuration['brightness']
