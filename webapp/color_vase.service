@@ -1,9 +1,9 @@
 # this file runs ~/ColorVase/webapp/color_api.py as a service at boot time
 #
-# automate later:
-# sudo update-rc.d color_vase defaults
-# sudo systemctl daemon-reload
-# sudo systemctl enable ~/MidiController/Main/color_vase.service
+# to get it started:
+# 1. permissions must be 644  for the .service file (this one)
+# 2. sudo systemctl daemon-reload
+# 3. sudo systemctl enable /home/pi/ColorVase/webapp/color_vase.service
 #
 # Usage:
 # sudo systemctl start | status | stop | restart color_vase
