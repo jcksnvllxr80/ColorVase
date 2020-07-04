@@ -116,9 +116,12 @@ def colorWipe(strip, color, wait_ms=50):
     """Wipe color across display a pixel at a time."""
     logger.debug("running the " + colorWipe.__name__ + " function.")
     for i in range(strip.numPixels()):
-        strip.setPixelColor(i, color)
-        strip.show()
-        time.sleep(wait_ms/1000.0)
+        if not break_out_of_current_thread:
+            strip.setPixelColor(i, color)
+            strip.show()
+            time.sleep(wait_ms/1000.0)
+        else:
+            break
 
 
 def theaterChase(strip, color, wait_ms=50, iterations=10):
