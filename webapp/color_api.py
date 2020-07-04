@@ -39,11 +39,11 @@ break_out_of_current_thread = False
 
 class ThreadRunner(threading.Thread):
     def __init__(self, threadID, name, func):
-        logger.info("Creating thread with ThreadID=" + str(threadID) + " and name=" + self.name + ".")
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
         self.func = func
+        logger.info("Created thread with ThreadID=" + str(threadID) + " and name=" + self.name + ".")
 
     def run(self):
         logger.info("Starting " + self.name)
