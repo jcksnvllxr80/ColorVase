@@ -35,7 +35,7 @@ LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 CONFIG_FOLDER = "/home/pi/ColorVase/webapp/conf/"
 CONFIG_FILE = CONFIG_FOLDER + "color_api.yaml"
 with open(CONFIG_FILE, 'r') as ymlfile:
-    config_file = yaml.load(ymlfile)
+    config_file = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
 LED_threads = []
 break_out_of_current_thread = False
