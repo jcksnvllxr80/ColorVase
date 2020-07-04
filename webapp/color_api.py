@@ -93,6 +93,7 @@ def save_to_config(opt, val):
 
 
 def start_new_thread(func, name):
+    global LED_threads
     while check_for_running_threads():
         time.sleep(0.005)
     new_thread = ThreadRunner(1, name, func)
