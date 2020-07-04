@@ -35,6 +35,7 @@ LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
 LED_threads = []
 break_out_of_current_thread = False
+bright_prcnt = 100
 
 
 class ThreadRunner(threading.Thread):
@@ -67,12 +68,12 @@ def color_api(command):
     The keyword used in the request was \"{command}\".</p>'''.format(command=command) + "\n"
 
 
-@app.route('/pilight/brightness/<brightness>', methods=['GET'])
-def color_api_brightness(brightness):
-    logger.info("A brightness request was made using the Color API. The keyword used in the request was \"" + str(brightness) + "\"") 
-    change_brightness(brightness)
+@app.route('/pilight/brightness/<prcnt_brightness>', methods=['GET'])
+def color_api_brightness(prcnt_brightness):
+    logger.info("A brightness request was made using the Color API. The brightness percentage used in the request was \"" + str(prcnt_brightness) + "\"") 
+    change_brightness(prcnt_brightness)
     return '''<h1>ColorApi</h1><p>A brightness request was made using the Color API. 
-    The value in the request was \"{brightness}\".</p>'''.format(brightness=brightness) + "\n"
+    The brightness percentage in the request was \"{prcnt_brightness}\".</p>'''.format(prcnt_brightness=prcnt_brightness) + "\n"
 
 
 @app.errorhandler(404)
@@ -133,13 +134,13 @@ def wheel(pos):
     """Generate rainbow colors across 0-255 positions."""
     logger.debug("running the " + wheel.__name__ + " function.")
     if pos < 85:
-        return Color(pos * 3, 255 - pos * 3, 0)
+        return Color(int(bright_prcnt * pos * 3), int(bright_prcnt * (255 - pos * 3)), 0)
     elif pos < 170:
         pos -= 85
-        return Color(255 - pos * 3, 0, pos * 3)
+        return Color(int(bright_prcnt * (255 - pos * 3)), 0, int(bright_prcnt * pos * 3))
     else:
         pos -= 170
-        return Color(0, pos * 3, 255 - pos * 3)
+        return Color(0, int(bright_prcnt * pos * 3), int(bright_prcnt * (255 - pos * 3)))
 
 
 def rainbow(strip, wait_ms=20, iterations=1):
@@ -187,9 +188,9 @@ def theaterChaseRainbow(strip, wait_ms=50):
 def solid_color(r, g, b):
     """Solid color across display a pixel at a time."""
     logger.debug("running the " + solid_color.__name__ + " function.")
-    r = r*LED_BRIGHTNESS
-    g = g*LED_BRIGHTNESS
-    b = b*LED_BRIGHTNESS
+    r = r * LED_BRIGHTNESS * bright_prcnt
+    g = g * LED_BRIGHTNESS * bright_prcnt
+    b = b * LED_BRIGHTNESS * bright_prcnt
     colorWipe(strip, Color(g, r, b))
 
 
@@ -290,9 +291,10 @@ def rainbow_cycle():
     rainbowCycle(strip, 20)
 
 
-def change_brightness(brightness):
+def change_brightness(prcnt_brightness):
+    global bright_prcnt
     logger.debug("running the " + change_brightness.__name__ + " function.")
-    pass
+    bright_prcnt = int(prcnt_brightness/100)
 
 
 def decide_function(command):
