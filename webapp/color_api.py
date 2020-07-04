@@ -39,7 +39,6 @@ with open(CONFIG_FILE, 'r') as ymlfile:
 
 LED_threads = []
 break_out_of_current_thread = False
-bright_prcnt = 100
 
 
 class ThreadRunner(threading.Thread):
@@ -64,7 +63,7 @@ def home():
 
 @app.route('/pilight/color/<command>', methods=['GET'])
 def color_api(command):
-    # global break_out_of_current_thread
+    global break_out_of_current_thread
     break_out_of_current_thread = True
     logger.info("A function request was made using the Color API. The keyword used in the request was \"" + str(command) + "\"") 
     decide_function(command)
@@ -94,6 +93,7 @@ def save_to_config(opt, val):
 
 
 def start_new_thread(func, name):
+    global LED_threads
     while check_for_running_threads():
         time.sleep(0.005)
     new_thread = ThreadRunner(1, name, func)
@@ -305,7 +305,6 @@ def rainbow_cycle():
 
 
 def change_brightness(prcnt_brightness):
-    global bright_prcnt
     logger.debug("running the " + change_brightness.__name__ + " function.")
     new_brightness = convert_percent_to_byte_range(prcnt_brightness)
     save_to_config("brightness", new_brightness)
@@ -317,7 +316,7 @@ def convert_percent_to_byte_range(prcnt_brightness):
 
 
 def decide_function(command):
-    # global break_out_of_current_thread
+    global break_out_of_current_thread
     logger.debug("running the " + decide_function.__name__ + " function.")
     command_dict = {
         "off"           : turn_off,
