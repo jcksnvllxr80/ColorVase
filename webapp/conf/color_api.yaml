@@ -1,5 +1,5 @@
 color_api:
     port: 12345
     brightness: 25
-    # func: rainbow
+    func: rainbow
 

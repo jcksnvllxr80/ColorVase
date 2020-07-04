@@ -367,7 +367,7 @@ def run_function(function):
     clear(20)
     start_new_thread(function, function.__name__)
     break_out_of_current_thread = False
-    # save_to_config("func", function)
+    save_to_config("func", function)
 
 
 if __name__ == '__main__':
@@ -392,11 +392,11 @@ if __name__ == '__main__':
     }
     configuration = {k: v for k, v in config_file['color_api'].items()}
     config_port = configuration['port']
-    # config_func = configuration['func']
+    config_func = configuration['func']
     config_brightness = configuration['brightness']
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port', dest='port', nargs='?', help='port to connect on')
-    # parser.add_argument('-f', '--function', dest='func', nargs='?', help='initial lighting function')
+    parser.add_argument('-f', '--function', dest='func', nargs='?', help='initial lighting function')
     parser.add_argument('-b', '--brightness', dest='brightness', nargs='?', help='brightness of bulbs')
     args = parser.parse_args()
 
@@ -412,17 +412,17 @@ if __name__ == '__main__':
     # Intialize the library (must be called once before other functions).
     strip.begin()
     clear(20)
-    # if args.func:
-    #     init_func = args.func
-    #     save_to_config("func", init_func)
-    # elif config_func:
-    #     init_func = config_func
+    if args.func:
+        init_func = args.func
+        save_to_config("func", init_func)
+    elif config_func:
+        init_func = config_func
 
-    # if init_func:
-    #     break_out_of_current_thread = True
-    #     run_function(init_func)
-    # else:
-    #     clear(20)
+    if init_func:
+        break_out_of_current_thread = True
+        run_function(init_func)
+    else:
+        clear(20)
 
     if args.port:
         port = args.port
