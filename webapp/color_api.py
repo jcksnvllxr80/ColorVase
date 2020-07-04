@@ -68,6 +68,7 @@ def color_api(command):
     function = get_func(command)
     if function:
         break_out_of_current_thread = True
+        save_to_config("func", command)
         run_function(function)
     return '''<h1>ColorApi</h1><p>A function request was made using the Color API. 
     The keyword used in the request was \"{command}\".</p>'''.format(command=command) + "\n"
@@ -371,7 +372,6 @@ def run_function(function):
     clear(20)
     start_new_thread(function, function.__name__)
     break_out_of_current_thread = False
-    save_to_config("func", function)
 
 
 if __name__ == '__main__':
