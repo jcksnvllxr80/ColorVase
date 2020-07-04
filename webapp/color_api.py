@@ -88,7 +88,7 @@ def page_not_found(e):
 
 def save_to_config(opt, val):
     global config_file
-    config_file.update({opt: val})
+    config_file['color_api'].update({opt: val})
     with open(CONFIG_FILE, 'w') as ymlfile:
         yaml.dump(config_file, ymlfile)
 
