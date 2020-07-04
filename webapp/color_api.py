@@ -339,8 +339,8 @@ def decide_function(command):
     function = command_dict.get(command.lower(), None)
     if function:
         clear(20)
-        break_out_of_current_thread = False
         start_new_thread(function, function.__name__)
+        break_out_of_current_thread = False
         # save_to_config("func", command)
     else:
         logger.error("The command\"" + command + "\" could not be found.") 
