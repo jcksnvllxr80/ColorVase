@@ -319,7 +319,7 @@ def decide_function(command):
     if function:
         clear(20)
         break_out_of_current_thread = False
-        start_new_thread(function(), function.__name__)
+        start_new_thread(function, function.__name__)
     else:
         logger.error("The command\"" + command + "\" could not be found.") 
 
