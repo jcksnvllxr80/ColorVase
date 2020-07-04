@@ -347,7 +347,6 @@ def decide_function(command):
 
 
 if __name__ == '__main__':
-    global break_out_of_current_thread
     # Process arguments
     logger.debug("running the " + __name__ + " function.")
     configuration = {k: v for k, v in config_file['color_api'].items()}
