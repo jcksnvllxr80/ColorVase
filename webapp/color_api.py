@@ -65,14 +65,18 @@ def home():
 def color_api(command):
     global break_out_of_current_thread
     logger.info("A function request was made using the Color API. The keyword used in the request was \"" + str(command) + "\"") 
-    function = command_dict.get(command.lower(), None)
+    function = get_func(command)
     if function:
         break_out_of_current_thread = True
-    else:
-        logger.error("The function \"" + command + "\" could not be found.") 
-    run_function(function)
+        run_function(function)
     return '''<h1>ColorApi</h1><p>A function request was made using the Color API. 
     The keyword used in the request was \"{command}\".</p>'''.format(command=command) + "\n"
+
+def get_func(command):
+    function = command_dict.get(command.lower(), None)
+    if not function:
+        logger.error("The function \"" + command + "\" could not be found.") 
+    return function
 
 
 @app.route('/pilight/brightness/<prcnt_brightness>', methods=['GET'])
@@ -419,8 +423,10 @@ if __name__ == '__main__':
         init_func = config_func
 
     if init_func:
-        break_out_of_current_thread = True
-        run_function(init_func)
+        function = get_func(init_func)
+        if function:
+            break_out_of_current_thread = True
+            run_function(function)
     else:
         clear(20)
 
