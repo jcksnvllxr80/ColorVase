@@ -64,7 +64,7 @@ def home():
 
 @app.route('/pilight/color/<command>', methods=['GET'])
 def color_api(command):
-    global break_out_of_current_thread
+    # global break_out_of_current_thread
     break_out_of_current_thread = True
     logger.info("A function request was made using the Color API. The keyword used in the request was \"" + str(command) + "\"") 
     decide_function(command)
@@ -317,7 +317,7 @@ def convert_percent_to_byte_range(prcnt_brightness):
 
 
 def decide_function(command):
-    global break_out_of_current_thread
+    # global break_out_of_current_thread
     logger.debug("running the " + decide_function.__name__ + " function.")
     command_dict = {
         "off"           : turn_off,
