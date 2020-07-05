@@ -232,7 +232,7 @@ def turn_off():
 
 def turn_on():
     logger.debug("running the " + turn_on.__name__ + " function.")
-    cmd_to_run = configuration['func']
+    cmd_to_run = config_file['color_api']['func']
     if cmd_to_run:
         func_to_run = get_func(cmd_to_run)
         if func_to_run:
