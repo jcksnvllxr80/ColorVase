@@ -68,7 +68,8 @@ def color_api(command):
     function = get_func(command)
     if function:
         break_out_of_current_thread = True
-        save_to_config("func", command)
+        if command not in ["reboot", "shut down"]:
+            save_to_config("func", command)
         run_function(function)
     return '''<h1>ColorApi</h1><p>A function request was made using the Color API. 
     The keyword used in the request was \"{command}\".</p>'''.format(command=command) + "\n"
@@ -428,7 +429,8 @@ if __name__ == '__main__':
     clear(20)
     if args.func:
         init_func = args.func
-        save_to_config("func", init_func)
+        if command not in ["reboot", "shut down"]:
+            save_to_config("func", init_func)
     elif config_func:
         init_func = config_func
 
