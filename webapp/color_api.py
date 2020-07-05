@@ -68,7 +68,7 @@ def color_api(command):
     function = get_func(command)
     if function:
         break_out_of_current_thread = True
-        if command not in ["reboot", "shut down"]:
+        if command not in non_save_func_list:
             save_to_config("func", command)
         run_function(function)
     return '''<h1>ColorApi</h1><p>A function request was made using the Color API. 
@@ -227,18 +227,23 @@ def clear(ms_btwn_bulbs):
 
 def turn_off():
     logger.debug("running the " + turn_off.__name__ + " function.")
-    while not break_out_of_current_thread:
-        dark()
-
-def dark():
-    logger.debug("running the " + dark.__name__ + " function.")
     clear(50)
 
 
 def turn_on():
     logger.debug("running the " + turn_on.__name__ + " function.")
+    cmd_to_run = configuration['func']
+    if cmd_to_run:
+        func_to_run = get_func(cmd_to_run)
+        if func_to_run:
+            run_function(func_to_run)
+
+
+def turn_white():
+    logger.debug("running the " + turn_on.__name__ + " function.")
     while not break_out_of_current_thread:
         white()
+
 
 def white():
     logger.debug("running the " + white.__name__ + " function.")
@@ -338,7 +343,7 @@ def do_colorwipe_cycle():
 
 
 def colorwipe_cycle():
-    func_list = [blue, red, magenta, green, cyan, yellow, white, dark]
+    func_list = [blue, red, magenta, green, cyan, yellow, white, turn_off]
     for func in func_list:
         if not break_out_of_current_thread:
             func()
@@ -368,11 +373,14 @@ def convert_percent_to_byte_range(prcnt_brightness):
 
 
 def run_function(function):
-    global break_out_of_current_thread
-    logger.debug("running the " + run_function.__name__ + " function.")
-    clear(20)
-    start_new_thread(function, function.__name__)
-    break_out_of_current_thread = False
+    if function.__name__ is "turn_on":
+        turn_on()
+    else:
+        global break_out_of_current_thread
+        logger.debug("running the " + run_function.__name__ + " function.")
+        clear(20)
+        start_new_thread(function, function.__name__)
+        break_out_of_current_thread = False
 
 
 def do_reboot():
@@ -395,7 +403,7 @@ if __name__ == '__main__':
         "cyan"          : turn_cyan,
         "magenta"       : turn_magenta,
         "yellow"        : turn_yellow,
-        "white"         : turn_on,
+        "white"         : turn_white,
         "strobe"        : do_strobe,
         "combo"         : do_combo,
         "rainbow"       : do_rainbow,
@@ -405,6 +413,7 @@ if __name__ == '__main__':
         "reboot"        : do_reboot,
         "shut down"     : do_shutdown
     }
+    non_save_func_list = ["reboot", "shut down", "on", "off"]
     configuration = {k: v for k, v in config_file['color_api'].items()}
     config_port = configuration['port']
     config_func = configuration['func']
@@ -429,7 +438,7 @@ if __name__ == '__main__':
     clear(20)
     if args.func:
         init_func = args.func
-        if command not in ["reboot", "shut down"]:
+        if init_func not in non_save_func_list:
             save_to_config("func", init_func)
     elif config_func:
         init_func = config_func
