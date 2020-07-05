@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import flask, logging, time, argparse, threading, yaml
+import flask, logging, time, argparse, threading, yaml, subprocess
 from flask import request, jsonify
 from rpi_ws281x import *
 
@@ -374,6 +374,14 @@ def run_function(function):
     break_out_of_current_thread = False
 
 
+def do_reboot():
+    subprocess.call("reboot")
+
+
+def do_shutdown():
+    subprocess.call(["shutdown", "now"])
+
+
 if __name__ == '__main__':
     # Process arguments
     logger.debug("running the " + __name__ + " function.")
@@ -392,7 +400,9 @@ if __name__ == '__main__':
         "rainbow"       : do_rainbow,
         "rainbow cycle" : do_rainbow_cycle,
         "rainbow chase" : do_rainbow_chase,
-        "color flip"    : do_colorwipe_cycle
+        "color flip"    : do_colorwipe_cycle,
+        "reboot"        : do_reboot,
+        "shut down"     : do_shutdown
     }
     configuration = {k: v for k, v in config_file['color_api'].items()}
     config_port = configuration['port']
