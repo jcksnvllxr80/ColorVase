@@ -388,7 +388,7 @@ def do_reboot():
 
 
 def do_shutdown():
-    subprocess.call(["shutdown", "now"])
+    subprocess.call(["service", "color_vase", "restart"])
 
 
 if __name__ == '__main__':
@@ -397,6 +397,8 @@ if __name__ == '__main__':
     command_dict = {
         "off"           : turn_off,
         "on"            : turn_on,
+        "stop"          : turn_off,
+        "start"         : turn_on,
         "red"           : turn_red,
         "blue"          : turn_blue,
         "green"         : turn_green,
@@ -410,10 +412,11 @@ if __name__ == '__main__':
         "rainbow cycle" : do_rainbow_cycle,
         "rainbow chase" : do_rainbow_chase,
         "color flip"    : do_colorwipe_cycle,
+        "restart"       : do_restart,
         "reboot"        : do_reboot,
         "shut down"     : do_shutdown
     }
-    non_save_func_list = ["reboot", "shut down", "on", "off"]
+    non_save_func_list = ["reboot", "shut down", "on", "off", "start", "stop", "restart"]
     configuration = {k: v for k, v in config_file['color_api'].items()}
     config_port = configuration['port']
     config_func = configuration['func']
