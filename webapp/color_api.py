@@ -388,6 +388,10 @@ def do_reboot():
 
 
 def do_shutdown():
+    subprocess.call(["shutdown", "now"])
+
+
+def do_restart():
     subprocess.call(["service", "color_vase", "restart"])
 
 
